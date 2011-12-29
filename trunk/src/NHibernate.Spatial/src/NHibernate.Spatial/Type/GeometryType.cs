@@ -32,6 +32,7 @@ namespace NHibernate.Spatial.Type
 	/// geometry type (eg. MsSqlSpatialGeometryType). See 
 	/// <see cref="NHibernate.Spatial.Dialect.SpatialDialect.LastInstantiated"/>
 	/// </remarks>
+	[Serializable]
 	public class GeometryType : IGeometryUserType
 	{
 		private readonly IGeometryUserType geometryUserType;

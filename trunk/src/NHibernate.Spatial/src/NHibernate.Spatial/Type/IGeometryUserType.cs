@@ -16,7 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using NHibernate.UserTypes;
-using System.Collections;
 
 namespace NHibernate.Spatial.Type
 {
@@ -24,9 +23,6 @@ namespace NHibernate.Spatial.Type
 	/// 
 	/// </summary>
 	public interface IGeometryUserType : IUserType, IParameterizedType
-		// TODO: If possible, remove IComparer. 
-		// See comments at SpatialAuxiliaryDatabaseObject::SqlCreateString
-		, IComparer
 	{
 		/// <summary>
 		/// Gets the system reference identification

@@ -15,6 +15,7 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Text;
 using NHibernate.Cfg;
 using NHibernate.Type;
@@ -75,7 +76,7 @@ namespace NHibernate.Spatial.Mapping
 	///  (Compare the values defined in the property type parameters with generated SQL code)
 	/// 
 	///  </example>
-
+    [Serializable]
 	public class SpatialAuxiliaryDatabaseObject : AbstractAuxiliaryDatabaseObject
 	{
 
@@ -145,14 +146,7 @@ namespace NHibernate.Spatial.Mapping
 			// Create objects per column
 			VisitGeometryColumns(delegate(Table table, Column column)
 			{
-				// Ugly trick: We use Comparator property to get the column instance of IGeometryUserType.
-				// (Comparator is mainly used in IVersionType comparisons)
-				// Maybe it will require to implement IComparer in IGeometryUserType, just to comply.
-				//
-				// It would be nicer if CustomType made UserType property public (today is protected).
-				IGeometryUserType geometryType = (IGeometryUserType)((CustomType)column.Value.Type).Comparator;
-
-				// The previous trick allows to get geometry type properties, such as SRID.
+				IGeometryUserType geometryType = (IGeometryUserType)((CustomType)column.Value.Type).UserType;
 				int srid = geometryType.SRID;
 				string subtype = geometryType.Subtype;
 
