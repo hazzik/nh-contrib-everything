@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using System.Linq;
-using GisSharpBlog.NetTopologySuite.Geometries;
-using GisSharpBlog.NetTopologySuite.IO;
+using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
@@ -10,6 +11,7 @@ using NHibernate.Spatial.Criterion;
 using NHibernate.Spatial.Linq;
 using NUnit.Framework;
 using Tests.NHibernate.Spatial.Model;
+using Tests.NHibernate.Spatial.OgcSfSql11Compliance.Model;
 
 namespace Tests.NHibernate.Spatial
 {
@@ -127,8 +129,7 @@ namespace Tests.NHibernate.Spatial
 
 			IList results =
 				session.Query<Simple>()
-					//.Where(s => s.Geometry == null || s.Geometry.IsEmpty)
-					.Where(s => s.Geometry.IsNull() || s.Geometry.IsEmpty)
+					.Where(s => s.Geometry == null || s.Geometry.IsEmpty)
 					.ToList();
 
 			Assert.AreEqual(3, results.Count);
@@ -175,6 +176,15 @@ namespace Tests.NHibernate.Spatial
 			{
 				Assert.IsTrue(item.Geometry.IsEmpty);
 			}
+		}
+
+		[Test]
+		public void CountSpatialEmpty_()
+		{
+            IGeometry geom = new Point(10, 10).Buffer(100);
+		    ICriteria crit = session.CreateCriteria(typeof (Simple))
+                .Add(SpatialRestrictions.Intersects("Geometry", geom));
+            var result = crit.List<Simple>();
 		}
 	}
 }

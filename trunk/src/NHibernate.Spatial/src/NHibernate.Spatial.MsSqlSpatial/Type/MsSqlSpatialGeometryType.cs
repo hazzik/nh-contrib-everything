@@ -15,15 +15,17 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.IO;
+using NetTopologySuite.IO;
 
 namespace NHibernate.Spatial.Type
 {
 	/// <summary>
 	/// 
 	/// </summary>
-	public class MsSqlSpatialGeometryType : GeometryTypeBase<byte[]>
+    [Serializable]
+    public class MsSqlSpatialGeometryType : GeometryTypeBase<byte[]>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MsSqlSpatialGeometryType"/> class.

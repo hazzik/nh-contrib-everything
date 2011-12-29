@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.Geometries;
+using NetTopologySuite.Geometries;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Spatial.Criterion;
@@ -53,12 +53,11 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 				for (int i = 0; i < filenames.Length; i++)
 				{
 					LoadTestCases(session, ref id, Path.Combine(basePath, filenames[i]));
-				}
-				session.Flush();
+                }
 			}
 		}
 
-		private static void LoadTestCases(ISession session, ref long id, string filename)
+		private void LoadTestCases(ISession session, ref long id, string filename)
 		{
 			XmlTestDocument document = new XmlTestDocument();
 			document.LoadFile(filename);
@@ -119,7 +118,14 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 
 					Prepare(ntsTestCase);
 
-					session.Save(ntsTestCase);
+                    try
+                    {
+                        session.Save(ntsTestCase);
+                        session.Flush();
+                    }
+                    catch
+                    {
+                    }
 				}
 			}
 		}
@@ -164,7 +170,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		{
 			if (geometry is ILinearRing)
 			{
-				return new Polygon((ILinearRing)geometry, null);
+				return new Polygon((ILinearRing)geometry, (ILinearRing[])null);
 			}
 			return geometry;
 		}

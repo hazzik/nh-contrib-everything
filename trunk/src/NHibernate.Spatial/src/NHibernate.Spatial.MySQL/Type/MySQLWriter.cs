@@ -18,7 +18,7 @@
 using System;
 using System.IO;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.IO;
+using NetTopologySuite.IO;
 
 namespace NHibernate.Spatial.Type
 {
@@ -39,7 +39,7 @@ namespace NHibernate.Spatial.Type
 		public override void Write(IGeometry geometry, Stream stream)
 		{
 			BinaryWriter writer;
-			if (this.encodingType == ByteOrder.LittleEndian)
+			if (this.EncodingType == ByteOrder.LittleEndian)
 			{
 				writer = new BinaryWriter(stream);
 			}
