@@ -25,6 +25,7 @@ namespace NHibernate.Spatial.Type
 	/// <summary>
 	/// 
 	/// </summary>
+	[Serializable]
 	public class MsSql2008GeographyType : GeometryTypeBase<SqlGeography>
 	{
 		private static readonly NullableType SqlGeographyType = new SqlGeographyType();
