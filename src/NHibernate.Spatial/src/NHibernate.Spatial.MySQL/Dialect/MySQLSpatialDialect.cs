@@ -413,7 +413,7 @@ namespace NHibernate.Spatial.Dialect
 			return null;
 		}
 
-		/// <summary>
+	    /// <summary>
 		/// Quotes the schema.
 		/// </summary>
 		/// <param name="schema">The schema.</param>
@@ -427,16 +427,17 @@ namespace NHibernate.Spatial.Dialect
 			return this.QuoteForSchemaName(schema) + StringHelper.Dot;
 		}
 
-		/// <summary>
-		/// Gets the spatial create string.
-		/// </summary>
-		/// <param name="schema">The schema.</param>
-		/// <param name="table">The table.</param>
-		/// <param name="column">The column.</param>
-		/// <param name="srid">The srid.</param>
-		/// <param name="subtype">The subtype.</param>
-		/// <returns></returns>
-		public string GetSpatialCreateString(string schema, string table, string column, int srid, string subtype)
+	    /// <summary>
+	    /// Gets the spatial create string.
+	    /// </summary>
+	    /// <param name="schema">The schema.</param>
+	    /// <param name="table">The table.</param>
+	    /// <param name="column">The column.</param>
+	    /// <param name="srid">The srid.</param>
+	    /// <param name="subtype">The subtype.</param>
+	    /// <param name="dimension">The dimension.</param>
+	    /// <returns></returns>
+	    public string GetSpatialCreateString(string schema, string table, string column, int srid, string subtype, int dimension)
 		{
 			StringBuilder builder = new StringBuilder();
 
