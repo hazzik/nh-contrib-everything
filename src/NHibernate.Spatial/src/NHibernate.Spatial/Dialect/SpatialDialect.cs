@@ -37,7 +37,7 @@ namespace NHibernate.Spatial.Dialect
 		public const string IsoPrefix = "ST_";
 
 		/// <summary>
-		/// The last spatial dialect instantiated in the current thread.
+		/// The last spatial dialect instantiated in the current AppDomain.
 		/// </summary>
 		/// 
 		/// <remarks>
@@ -61,7 +61,6 @@ namespace NHibernate.Spatial.Dialect
 		/// </para>
 		/// 
 		/// </remarks>
-		[ThreadStatic]
 		private static ISpatialDialect lastInstantiated;
 
 		public static ISpatialDialect LastInstantiated
