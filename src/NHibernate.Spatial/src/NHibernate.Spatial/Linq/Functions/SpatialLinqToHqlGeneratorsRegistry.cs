@@ -7,8 +7,6 @@ namespace NHibernate.Spatial.Linq.Functions
 	{
 		public SpatialLinqToHqlGeneratorsRegistry()
 		{
-			this.Merge(new IsNullGenerator());
-
 			this.Merge(new RelationsGenerator());
 
 			this.Merge(new AnalysisGenerator());

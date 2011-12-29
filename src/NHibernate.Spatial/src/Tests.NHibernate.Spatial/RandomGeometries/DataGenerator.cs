@@ -1,6 +1,6 @@
 using System;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.Geometries;
+using NetTopologySuite.Geometries;
 using NHibernate;
 using Tests.NHibernate.Spatial.RandomGeometries.Model;
 
@@ -8,12 +8,12 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 {
 	internal static class DataGenerator
 	{
-		private const int GeneratedRowsPerEntityCount = 500;
+		private const int GeneratedRowsPerEntityCount = 11;
 		private const int MinCoordValue = 0;
 		private const int MaxCoordValue = 100000;
 		private const int MaxNumGeom = 10;
 		private const int MaxNumCoords = 20;
-		private static readonly Random Random = new Random();
+		private static readonly Random Random = new Random(1);
 
 		public static void Generate(ISessionFactory factory)
 		{

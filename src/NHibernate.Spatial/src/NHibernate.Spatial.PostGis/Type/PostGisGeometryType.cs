@@ -19,8 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.Geometries;
-using GisSharpBlog.NetTopologySuite.IO;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
 
 namespace NHibernate.Spatial.Type
 {
@@ -30,7 +30,8 @@ namespace NHibernate.Spatial.Type
 	/// due to a limitation in Npgsql driver.
 	/// See http://gborg.postgresql.org/project/npgsql/bugs/bugupdate.php?1409
 	/// </summary>
-	public class PostGisGeometryType : GeometryTypeBase<string>
+    [Serializable]
+    public class PostGisGeometryType : GeometryTypeBase<string>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PostGisGeometryType"/> class.
