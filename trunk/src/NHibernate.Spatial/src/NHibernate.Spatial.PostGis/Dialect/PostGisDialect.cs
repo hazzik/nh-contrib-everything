@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Data;
 using System.Text;
 using NHibernate.Dialect;
 using NHibernate.Spatial.Dialect.Function;
@@ -333,11 +334,11 @@ namespace NHibernate.Spatial.Dialect
 						.Add(relation.ToString())
 						.Add("(")
 						.AddObject(geometry)
-                        .Add("::geometry")
+                        .Add("::text")
 						.Add(", ")
 						.AddObject(anotherGeometry)
-                        .Add("::geometry")
-                        .Add(")")
+                        .Add("::text")
+						.Add(")")
 						.ToSqlString();
 			}
 		}
@@ -425,11 +426,11 @@ namespace NHibernate.Spatial.Dialect
 						.Add(analysis.ToString())
 						.Add("(")
 						.AddObject(geometry)
-                        .Add("::geometry")
+                        .Add("::text")
 						.Add(",")
 						.AddObject(extraArgument)
-                        .Add("::geometry")
-                        .Add(")")
+                        .Add("::text")
+						.Add(")")
 						.ToSqlString();
 				default:
 					throw new ArgumentException("Invalid spatial analysis argument");
@@ -468,34 +469,56 @@ namespace NHibernate.Spatial.Dialect
 			return this.QuoteForSchemaName(schema) + StringHelper.Dot;
 		}
 
-		/// <summary>
-		/// Gets the spatial create string.
-		/// </summary>
-		/// <param name="schema">The schema.</param>
-		/// <param name="table">The table.</param>
-		/// <param name="column">The column.</param>
-		/// <param name="srid">The srid.</param>
-		/// <param name="subtype">The subtype.</param>
-		/// <returns></returns>
-		public string GetSpatialCreateString(string schema, string table, string column, int srid, string subtype)
-		{
-			StringBuilder builder = new StringBuilder();
+        /// <summary>
+        /// Gets the spatial create string.
+        /// </summary>
+        /// <param name="schema">The schema.</param>
+        /// <param name="table">The table.</param>
+        /// <param name="column">The column.</param>
+        /// <param name="srid">The srid.</param>
+        /// <param name="subtype">The subtype.</param>
+        /// <param name="dimension">[3DIS] The dimension</param>
+        /// <returns></returns>
+        public string GetSpatialCreateString(string schema, string table, string column, int srid, string subtype, int dimension)
+        {
+            StringBuilder builder = new StringBuilder();
 
-			builder.AppendFormat("ALTER TABLE {0}{1} DROP COLUMN {2}"
-				, this.QuoteSchema(schema)
+            builder.AppendFormat("ALTER TABLE {0}{1} DROP COLUMN {2}"
+                , this.QuoteSchema(schema)
 				, this.QuoteForTableName(table)
 				, this.QuoteForColumnName(column)
-				);
+                );
 
-			builder.Append(this.MultipleQueriesSeparator);
+            builder.Append(this.MultipleQueriesSeparator);
 
-			builder.AppendFormat("SELECT AddGeometryColumn('{0}','{1}','{2}',{3},'{4}',2)",
-				schema, table, column, srid, subtype);
+            builder.AppendFormat("SELECT AddGeometryColumn('{0}','{1}','{2}',{3},'{4}',{5})",
+                //this.QuoteSchema(schema), this.QuoteForTableName(table), this.QuoteForColumnName(column), srid, subtype, dimension == 3 ? 3 : 2);
+                schema, table, column, srid, subtype, dimension == 3 ? 3 : 2);
 
-			builder.Append(this.MultipleQueriesSeparator);
+            builder.Append(this.MultipleQueriesSeparator);
 
-			return builder.ToString();
-		}
+            builder.Append(GetSpatialIndexCreateString(schema, table, column));
+
+            return builder.ToString();
+        }
+
+        private string GetSpatialIndexCreateString(string schema, string table, string column)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append(GetSpatialIndexDropString(schema, table, column));
+            builder.Append(this.MultipleQueriesSeparator);
+
+            if (string.IsNullOrEmpty(schema))
+                builder.AppendFormat("CREATE INDEX {0}_{1}_idx ON {2} USING GIST ({3})",
+                                table, column, this.QuoteForTableName(table), this.QuoteForColumnName(column));
+            else
+                builder.AppendFormat("CREATE INDEX {0}_{1}_idx ON {2}{3} USING GIST ({4})",
+                                table, column, this.QuoteSchema(schema), this.QuoteForTableName(table), this.QuoteForColumnName(column));
+            builder.Append(this.MultipleQueriesSeparator);
+
+            return builder.ToString();
+        }
 
 		/// <summary>
 		/// Gets the spatial drop string.
@@ -522,11 +545,34 @@ namespace NHibernate.Spatial.Dialect
 		public string GetSpatialDropString(string schema, string table, string column)
 		{
 			StringBuilder builder = new StringBuilder();
-			builder.AppendFormat("SELECT DropGeometryColumn('{0}','{1}','{2}')",
-				schema, table, column);
+
+            builder.Append(GetSpatialIndexDropString(schema, table, column));
+            if (string.IsNullOrEmpty(schema))
+                builder.AppendFormat("SELECT DropGeometryColumn('{0}','{1}')",
+                    table, column);
+            else    
+			    builder.AppendFormat("SELECT DropGeometryColumn('{0}','{1}','{2}')",
+                    schema, table, column);
 			builder.Append(this.MultipleQueriesSeparator);
+
 			return builder.ToString();
 		}
+
+        private string GetSpatialIndexDropString(string schema, string table, string column)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            if (string.IsNullOrEmpty(schema))
+                builder.AppendFormat("DROP INDEX IF EXISTS {0}_{1}_idx",
+                                     table, column);
+            else
+                builder.AppendFormat("DROP INDEX IF EXISTS {0}{1}_{2}_idx",
+                                     this.QuoteSchema(schema), table, column);
+
+            builder.Append(this.MultipleQueriesSeparator);
+
+            return builder.ToString();
+        }
 
 		/// <summary>
 		/// Gets a value indicating whether it supports spatial metadata.
