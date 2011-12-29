@@ -49,6 +49,7 @@ namespace NHibernate.Spatial.Type
 
 		private int srid = -1;
 		private string subtype = "GEOMETRY";
+	    private int dimension = 2;
 
 		private readonly NullableType nullableType;
 		private readonly SqlType sqlType;
@@ -264,6 +265,13 @@ namespace NHibernate.Spatial.Type
 				{
 					this.subtype = parameterSubtype;
 				}
+                //[3DIS]
+			    string strDimension;
+                parameters.TryGetValue("dimension", out strDimension);
+                if (!string.IsNullOrEmpty(strDimension))
+                {
+                    Int32.TryParse(strDimension, out this.dimension);
+                }
 			}
 		}
 
@@ -284,6 +292,14 @@ namespace NHibernate.Spatial.Type
 		{
 			get { return this.subtype; }
 		}
+
+        /// <summary>
+        /// [3DIS] Gets the Dimension [2,3]
+        /// </summary>
+        public int Dimension
+        {
+            get { return this.dimension; }
+        }
 
 		/// <summary>
 		/// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.

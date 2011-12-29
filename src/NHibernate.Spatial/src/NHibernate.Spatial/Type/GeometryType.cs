@@ -209,6 +209,14 @@ namespace NHibernate.Spatial.Type
 			get { return this.geometryUserType.Subtype; }
 		}
 
+        /// <summary>
+        /// [3DIS] Gets the Dimension [2,3]
+        /// </summary>
+        public int Dimension
+        {
+            get { return this.geometryUserType.Dimension; }
+        }
+
 		/// <summary>
 		/// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
 		/// </summary>

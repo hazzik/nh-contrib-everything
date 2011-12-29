@@ -149,8 +149,9 @@ namespace NHibernate.Spatial.Mapping
 				IGeometryUserType geometryType = (IGeometryUserType)((CustomType)column.Value.Type).UserType;
 				int srid = geometryType.SRID;
 				string subtype = geometryType.Subtype;
+                int dimension = geometryType.Dimension;
 
-				builder.Append(spatialDialect.GetSpatialCreateString(defaultSchema, table.Name, column.Name, srid, subtype));
+				builder.Append(spatialDialect.GetSpatialCreateString(defaultSchema, table.Name, column.Name, srid, subtype, dimension));
 			});
 
 			return builder.ToString();
