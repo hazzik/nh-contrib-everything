@@ -99,6 +99,7 @@ AND the_geom IS NOT NULL
         /// NHSP-18: Line geometry insertion fails if line contains only two idantical points
         /// </summary>
         [Test]
+        [ExpectedException(typeof(System.FormatException))]
         public void NHSP_18()
         {
             var geometry = new WKTReader().Read("LINESTRING(5 5, 5 5)");
