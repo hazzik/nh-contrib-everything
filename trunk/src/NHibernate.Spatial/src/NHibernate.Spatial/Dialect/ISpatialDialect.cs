@@ -114,16 +114,17 @@ namespace NHibernate.Spatial.Dialect
 		/// <returns></returns>
 		string GetSpatialCreateString(string schema);
 
-		/// <summary>
-		/// Gets the spatial create string.
-		/// </summary>
-		/// <param name="schema">The schema.</param>
-		/// <param name="table">The table.</param>
-		/// <param name="column">The column.</param>
-		/// <param name="srid">The srid.</param>
-		/// <param name="subtype">The subtype.</param>
-		/// <returns></returns>
-		string GetSpatialCreateString(string schema, string table, string column, int srid, string subtype);
+        /// <summary>
+        /// Gets the spatial create string.
+        /// </summary>
+        /// <param name="schema">The schema.</param>
+        /// <param name="table">The table.</param>
+        /// <param name="column">The column.</param>
+        /// <param name="srid">The srid.</param>
+        /// <param name="subtype">The subtype.</param>
+        /// <param name="dimension">[3DIS] The dimension</param>
+        /// <returns></returns>
+        string GetSpatialCreateString(string schema, string table, string column, int srid, string subtype, int dimension);
 
 		/// <summary>
 		/// Gets the spatial drop string.

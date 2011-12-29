@@ -33,5 +33,10 @@ namespace NHibernate.Spatial.Type
 		/// Gets the OGC geometry subtype name
 		/// </summary>
 		string Subtype { get; }
+
+        /// <summary>
+        /// [3DIS] Gets the Dimension [2,3]
+        /// </summary>
+        int Dimension { get; }
 	}
 }
