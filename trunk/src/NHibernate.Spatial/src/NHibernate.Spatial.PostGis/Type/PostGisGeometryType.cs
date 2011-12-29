@@ -103,25 +103,38 @@ namespace NHibernate.Spatial.Type
 			return geometry;
 		}
 
-		private static byte[] ToByteArray(string hex)
-		{
-			List<byte> data = new List<byte>();
-			for (int i = 0; i < hex.Length; i += 2)
-			{
-				data.Add((byte)Int32.Parse(hex.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
-			}
-			return data.ToArray();
-		}
+        private static byte[] ToByteArray(string hex)
+        {
+            if (hex.Length % 2 == 1)
+                throw new ArgumentException("Invalid input. It must have an even length.", "hex");
 
-		private static string ToString(byte[] bytes)
-		{
-			StringBuilder builder = new StringBuilder(bytes.Length * 2);
-			for (int i = 0; i < bytes.Length; i++)
-			{
-				builder.AppendFormat("{0:X2}", bytes[i]);
-			}
-			return builder.ToString();
-		}
+            byte[] data = new byte[hex.Length / 2];
+            for (int i = 0; i < hex.Length; i += 2)
+            {
+                char c1 = hex[i];
+                char c2 = hex[i + 1];
+
+                int result = (c1 < 'A') ? (c1 - '0') : (10 + (c1 - 'A'));
+                result = result << 4;
+                result |= (c2 < 'A') ? (c2 - '0') : (10 + (c2 - 'A'));
+                data[i / 2] = (byte) (result);
+            }
+            return data;
+        }
+
+        private static string ToString(byte[] bytes)
+        {
+            char[] data = new char[bytes.Length * 2];
+            int idx = 0;
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                int n1 = bytes[i] >> 4;
+                int n2 = bytes[i] & 0xF;
+                data[idx++] = (char) ((n1) < 10 ? '0' + n1 : n1 - 10 + 'A');
+                data[idx++] = (char) ((n2) < 10 ? '0' + n2 : n2 - 10 + 'A');
+            }
+            return new string(data);
+        }
 
 	}
 }
