@@ -25,6 +25,7 @@ namespace NHibernate.Spatial.Type
     /// <summary>
     /// 
     /// </summary>
+    [Serializable]
     public class MsSql2008GeometryType : GeometryTypeBase<SqlGeometry>
     {
 		private static readonly NullableType SqlGeometryType = new SqlGeometryType();
@@ -72,11 +73,11 @@ namespace NHibernate.Spatial.Type
         	}
         	catch (FormatException ex)
         	{
-        		if (ex.Message == "24117: The LineString input is not valid because it does not have enough distinct points. A LineString must have at least two distinct points." ||
-        		    ex.Message == "24305: The Polygon input is not valid because the ring does not have enough distinct points. Each ring of a polygon must contain at least three distinct points.")
+        		if (ex.Message.StartsWith("24117:") /* The LineString input is not valid because it does not have enough distinct points. A LineString must have at least two distinct points.*/ ||
+        		    ex.Message.StartsWith("24305:") /* "The Polygon input is not valid because the ring does not have enough distinct points. Each ring of a polygon must contain at least three distinct points.*/)
         		{
         			// TODO: Not sure what to do in these cases...
-        			return null;
+                    //return null;
         		}
         		throw;
         	}
