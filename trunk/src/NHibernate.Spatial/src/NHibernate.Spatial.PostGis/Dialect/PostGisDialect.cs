@@ -281,7 +281,7 @@ namespace NHibernate.Spatial.Dialect
 					aggregateFunction = IntersectionAggregateName;
 					break;
 				case SpatialAggregate.Union:
-					aggregateFunction = "GeomUnion";
+					aggregateFunction = SpatialDialect.IsoPrefix + "Union";
 					break;
 				default:
 					throw new ArgumentException("Invalid spatial aggregate argument");
@@ -333,9 +333,11 @@ namespace NHibernate.Spatial.Dialect
 						.Add(relation.ToString())
 						.Add("(")
 						.AddObject(geometry)
+                        .Add("::geometry")
 						.Add(", ")
 						.AddObject(anotherGeometry)
-						.Add(")")
+                        .Add("::geometry")
+                        .Add(")")
 						.ToSqlString();
 			}
 		}
@@ -423,9 +425,11 @@ namespace NHibernate.Spatial.Dialect
 						.Add(analysis.ToString())
 						.Add("(")
 						.AddObject(geometry)
+                        .Add("::geometry")
 						.Add(",")
 						.AddObject(extraArgument)
-						.Add(")")
+                        .Add("::geometry")
+                        .Add(")")
 						.ToSqlString();
 				default:
 					throw new ArgumentException("Invalid spatial analysis argument");
